@@ -4,7 +4,7 @@
  */
 
 class Model {
-  #board;
+  board;
   #width;
   #height;
   #correntPlayer;
@@ -18,16 +18,17 @@ class Model {
     this.victoryEvent = new Event();
     this.drawEvent = new Event();
     this.updateEvent = new Event();
-    this.#board = Array(height * width).fill();
+
+    this.board = Array(height * width).fill("");
     this.#width = width;
     this.#height = height;
     this.#correntPlayer = "😎";
     this.#finishGame = false;
   }
 
-  get board() {
-    return this.#board;
-  }
+  // get board() {
+  //   return this.#board;
+  // }
   get width() {
     return this.#width;
   }
@@ -40,9 +41,9 @@ class Model {
   get finishGame() {
     return this.#finishGame;
   }
-  set board([index, value]) {
-    this.#board[index] = value;
-  }
+  // set board([index, value]) {
+  //   this.#board[index] = value;
+  // }
   set width(width) {
     this.#width = width;
   }
@@ -138,6 +139,7 @@ class Model {
   }
   //switch playars
   switchPlayer() {
+    //console.log(this.correntPlayer === "😎");
     if (this.correntPlayer === "😎") {
       this.correntPlayer = "🐱‍👤";
     } else {
@@ -147,14 +149,24 @@ class Model {
   //play(move)
   play(i) {
     if (i < 0 || i > this.height * this.width - 1) return;
+
     while (i <= this.width * (this.height - 1) - 1 && !this.board[i + this.width]) {
       i += this.width;
     }
-    this.board = [i, this.currentPlayer];
-    if (this.victory || this.draw) {
-      this.finishGame = true;
-      return; ///finish the game
-    }
+
+    this.board[i] = this.correntPlayer;
+
+    //console.log(this.board);
+
+    // this.board = this.board.map((j) =>
+    //   todo.id === i ? { id: todo.id, text: updatedText, complete: todo.complete } : todo
+    // );
+    //console.log(this.updateEvent);
+    // if (this.victory || this.draw) {
+    //   this.finishGame = true;
+    //   return; ///finish the game
+    // }
+
     this.updateEvent.trigger(this.board);
     //send the board to view)
     this.switchPlayer();
@@ -206,8 +218,7 @@ class View {
     this.cells = Array(board.length)
       .fill()
       .map((element, i) => {
-        console.log(i);
-        const cell = this.createElement("div", [], ["cell"]);
+        const cell = this.createElement("div", [board[i]], ["cell"]);
         cell.addEventListener("click", () => {
           this.playEvent.trigger(i);
         });
@@ -244,12 +255,12 @@ class Controller {
     this.#model = new Model(6, 8);
     this.#view = new View();
     //console.log(this.#model.playEvent.addListener);
-    this.#model.playEvent.addListener((move) => {
+    this.#view.playEvent.addListener((move) => {
       this.#model.play(move);
     });
-    this.#model.victoryEvent.addListener((winner) => this.view.victory(winner));
-    this.#model.drawEvent.addListener(() => this.view.drawEvent());
-    this.#model.updateEvent.addListener((board) => this.view.render(board));
+    this.#model.victoryEvent.addListener((winner) => this.#view.victory(winner));
+    this.#model.drawEvent.addListener(() => this.#view.drawEvent());
+    this.#model.updateEvent.addListener((board) => this.#view.render(board));
   }
   run() {
     this.#view.render(this.#model.board);
@@ -263,6 +274,8 @@ class Event {
     this.listeners.push(listener);
   }
   trigger(params) {
+    //this.listeners[0]();
+    //console.log(params);
     this.listeners.forEach((listener) => {
       listener(params);
     });
