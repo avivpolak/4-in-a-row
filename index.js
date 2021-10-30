@@ -126,9 +126,9 @@ class Model {
       }
     };
 
-    if (check()) {
-      this.victoryEvent.trigger(this.currentPlayer);
-    }
+    // if (check()) {
+    //   this.victoryEvent.trigger(this.correntPlayer);
+    // }
 
     return check();
   }
@@ -156,20 +156,15 @@ class Model {
 
     this.board[i] = this.correntPlayer;
 
-    //console.log(this.board);
-
-    // this.board = this.board.map((j) =>
-    //   todo.id === i ? { id: todo.id, text: updatedText, complete: todo.complete } : todo
-    // );
-    //console.log(this.updateEvent);
-    // if (this.victory || this.draw) {
-    //   this.finishGame = true;
-    //   return; ///finish the game
-    // }
-
-    this.updateEvent.trigger(this.board);
+    if (this.victory()) {
+      this.victoryEvent.trigger(this.correntPlayer);
+    }
+    if (this.board.every((i) => i)) {
+      this.drawEvent.trigger();
+    }
     //send the board to view)
     this.switchPlayer();
+    this.updateEvent.trigger(this.board);
   }
   //finishGameFlag
 }
@@ -259,7 +254,7 @@ class Controller {
       this.#model.play(move);
     });
     this.#model.victoryEvent.addListener((winner) => this.#view.victory(winner));
-    this.#model.drawEvent.addListener(() => this.#view.drawEvent());
+    this.#model.drawEvent.addListener(() => this.#view.draw());
     this.#model.updateEvent.addListener((board) => this.#view.render(board));
   }
   run() {
