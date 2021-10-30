@@ -8,7 +8,12 @@ class Model {
   #width;
   #height;
   #correntPlayer;
-  constractor(width, height) {
+  #finishGame;
+  playEvent;
+  victoryEvent;
+  drawEvent;
+  updateEvent;
+  constructor(width, height) {
     this.playEvent = new Event();
     this.victoryEvent = new Event();
     this.drawEvent = new Event();
@@ -19,6 +24,7 @@ class Model {
     this.#correntPlayer = "😎";
     this.#finishGame = false;
   }
+
   get board() {
     return this.#board;
   }
@@ -162,10 +168,12 @@ class Model {
  * Visual representation of the model.
  */
 class View {
-  //constractor()
+  constructor() {
+    this.playEvent = new Event();
+  }
   //
   //static create element
-  static createElement(tagName, children = [], classes = [], attributes = {}, eventListeners = {}) {
+  createElement(tagName, children = [], classes = [], attributes = {}, eventListeners = {}) {
     let el = document.createElement(tagName);
     //Adding children
     for (const child of children) {
@@ -188,27 +196,28 @@ class View {
 
   //render board
   render(board) {
-    document.body.innerHTML = createBoard(board);
+    document.body.innerHTML = "";
+    document.body.append(this.createBoard(board));
   }
 
   createBoard(board) {
-    let table = createElement("div");
+    let table = this.createElement("div", [], ["board"]);
 
     this.cells = Array(board.length)
       .fill()
       .map((element, i) => {
-        const cell = this.createElement(
-          "div",
-          [],
-          ["cell"],
-          {},
-          { click: this.playEvent.trigger(i) }
-        );
+        console.log(i);
+        const cell = this.createElement("div", [], ["cell"]);
+        cell.addEventListener("click", () => {
+          this.playEvent.trigger(i);
+        });
+
         if (element) {
           cell.append(element);
         }
         table.append(cell);
       });
+    return table;
   }
   victory(winner) {
     alert(`${winner} is the winner!`);
@@ -216,6 +225,7 @@ class View {
   draw() {
     alert(`its a draw`);
   }
+
   //events
 }
 
@@ -231,14 +241,18 @@ class Controller {
   #model;
   #view;
   constructor() {
-    this.#model = new Model(10, 6);
+    this.#model = new Model(6, 8);
     this.#view = new View();
-    this.#view.playEvent.addListener((move) => {
+    //console.log(this.#model.playEvent.addListener);
+    this.#model.playEvent.addListener((move) => {
       this.#model.play(move);
     });
     this.#model.victoryEvent.addListener((winner) => this.view.victory(winner));
     this.#model.drawEvent.addListener(() => this.view.drawEvent());
     this.#model.updateEvent.addListener((board) => this.view.render(board));
+  }
+  run() {
+    this.#view.render(this.#model.board);
   }
 }
 class Event {
@@ -254,7 +268,10 @@ class Event {
     });
   }
 }
-
+let event = new Event();
+//console.log(event);
+let controller = new Controller();
+controller.run();
 //create board->creat data,row,table
 //   createBoard(board) {
 //     let table = createElement("table", [], [], {}, { click: "handleClick" });
