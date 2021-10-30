@@ -203,11 +203,13 @@ class View {
 
   //render board
   render(board) {
-    document.body.innerHTML = "";
-    document.body.append(this.createBoard(board));
+    document.getElementById("main").innerHTML = "";
+    document.getElementById("main").append(this.createBoard(board));
+    this.createBoard3d(board);
   }
 
   createBoard(board) {
+    console.log(board);
     let table = this.createElement("div", [], ["board"]);
 
     this.cells = Array(board.length)
@@ -224,6 +226,82 @@ class View {
         table.append(cell);
       });
     return table;
+  }
+  createBoard3d(board) {
+    let width = 6;
+    let height = board.length / width;
+    let isSpinning = true;
+
+    let illo = new Zdog.Illustration({
+      element: ".zdog-svg",
+      rotate: { x: -Zdog.TAU / 16 },
+      dragRotate: true,
+      onDragStart: function () {
+        isSpinning = false;
+      },
+      onDragStop: function () {
+        isSpinning = true;
+      },
+    });
+
+    // new Zdog.Rect({
+    //   addTo: illo,
+    //   width: 100 * (width + 1),
+    //   height: 100 * (height + 1),
+    //   stroke: 16,
+    //   fill: true,
+    //   color: "yellow",
+    // });
+
+    [false, true].forEach(function () {
+      let SliceClass = Zdog.Group;
+
+      let dotSlice = new SliceClass({
+        addTo: illo,
+        translate: { z: 25 },
+      });
+
+      const d = 90;
+
+      let dot = new Zdog.Shape({
+        addTo: dotSlice,
+        stroke: 50,
+        color: "",
+      });
+      for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+          console.log(board[i * width + j]);
+          let dotColor;
+          if (board[i * width + j] === "😎") {
+            new Zdog.Ellipse({
+              addTo: illo,
+              diameter: 70,
+              translate: { x: j * d - (100 * width) / 2, y: i * d - (100 * height) / 2 },
+              stroke: 20,
+              color: "#636",
+            });
+          } else if (board[i * width + j] === "🐱‍👤") {
+            new Zdog.Rect({
+              addTo: illo,
+              width: 70,
+              height: 70,
+              translate: { x: j * d - (100 * width) / 2, y: i * d - (100 * height) / 2 },
+              stroke: 12,
+              color: "#E62",
+              fill: true,
+            });
+          }
+        }
+      }
+    });
+
+    function animate() {
+      illo.rotate.y += isSpinning ? 0.01 : 0;
+      illo.updateRenderGraph();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
   }
   victory(winner) {
     alert(`${winner} is the winner!`);
