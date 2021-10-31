@@ -2,7 +2,17 @@
  * @format
  * @class Model Manages the data of the application.
  */
+document.getElementById("set").addEventListener("click", setSize);
+function setSize() {
+  //get theme from selector.
+  //set it to the page
+  //send it to local storege.
 
+  const rows = document.getElementById("rows").value;
+  const columns = document.getElementById("columns").value;
+  console.log(rows, columns);
+  //document.documentElement.className = themeName;
+}
 class Model {
   board;
   #width;
@@ -262,13 +272,42 @@ class View {
 
       const d = 150;
 
-      let dot = new Zdog.Shape({
-        addTo: dotSlice,
-        stroke: 50,
-        color: "",
+      let xGrid = new Zdog.Shape({
+        addTo: illo,
+        stroke: 4,
+        color: "#636",
+      });
+      let dotGrid = new Zdog.Shape({
+        addTo: illo,
+        stroke: 4,
+        color: "#636",
+      });
+      let yGrid = new Zdog.Shape({
+        addTo: illo,
+        stroke: 4,
+        color: "#636",
       });
       for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
+          xGrid.copy({
+            path: [
+              { x: -(100 * width), y: (i - 3) * d },
+              { x: 100 * width, y: (i - 3) * d },
+            ],
+          });
+          yGrid.copy({
+            path: [
+              { x: -(100 * width), y: (i - 3) * d },
+              { x: 100 * width, y: (i - 3) * d },
+            ],
+          });
+          dotGrid.copy({
+            path: [
+              { x: (j - 2) * d, y: i * d - (100 * height) / 2 },
+              { x: (j - 2) * d, y: i * d - (100 * height) / 2 },
+            ],
+          });
+
           if (board[i * width + j] === "🏃‍♂️") {
             var sceneSize = 48;
             var isSpinning = true;
