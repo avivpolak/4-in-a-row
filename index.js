@@ -272,36 +272,27 @@ class View {
 
       const d = 150;
 
-      let xGrid = new Zdog.Shape({
+      let Grid = new Zdog.Shape({
         addTo: illo,
         stroke: 4,
         color: "#636",
       });
-      let dotGrid = new Zdog.Shape({
-        addTo: illo,
-        stroke: 4,
-        color: "#636",
-      });
-      let yGrid = new Zdog.Shape({
-        addTo: illo,
-        stroke: 4,
-        color: "#636",
-      });
+
       for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
-          xGrid.copy({
+          Grid.copy({
             path: [
               { x: -(100 * width), y: (i - 3) * d },
               { x: 100 * width, y: (i - 3) * d },
             ],
           });
-          yGrid.copy({
+          Grid.copy({
             path: [
-              { x: (j - 3) * d * d, y: -(100 * width) },
-              { x: (j - 3) * d * d, y: 100 * width },
+              { x: (j - 2.5) * d, y: -(100 * height) },
+              { x: (j - 2.5) * d, y: 100 * height },
             ],
           });
-          dotGrid.copy({
+          Grid.copy({
             path: [
               { x: (j - 2) * d, y: i * d - (100 * height) / 2 },
               { x: (j - 2) * d, y: i * d - (100 * height) / 2 },
