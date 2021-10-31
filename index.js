@@ -292,12 +292,6 @@ class View {
               { x: (j - 2.5) * d, y: 100 * height },
             ],
           });
-          Grid.copy({
-            path: [
-              { x: (j - 2) * d, y: i * d - (100 * height) / 2 },
-              { x: (j - 2) * d, y: i * d - (100 * height) / 2 },
-            ],
-          });
 
           if (board[i * width + j] === "🏃‍♂️") {
             var sceneSize = 48;
