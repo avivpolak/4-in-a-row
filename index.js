@@ -297,8 +297,8 @@ class View {
           });
           yGrid.copy({
             path: [
-              { x: -(100 * width), y: (i - 3) * d },
-              { x: 100 * width, y: (i - 3) * d },
+              { x: (j - 3) * d * d, y: -(100 * width) },
+              { x: (j - 3) * d * d, y: 100 * width },
             ],
           });
           dotGrid.copy({
